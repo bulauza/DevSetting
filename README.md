@@ -37,7 +37,7 @@ Hyper-VとWindows Subsystem for Linuxにチェックをつけてサインアウ�
 [Docker for Windowsで快適な環境を得るまでの そこそこ長い闘い](https://qiita.com/YukiMiyatake/items/73c7d6c4f2c9739ebe60)  
 [WSLでDocker for windowsを使うッ！！！](https://qiita.com/endo_hizumi/items/0cc50bdfbd827579733e)  
 
-エラーが出てきてしまう
+GPUを使おうとするとエラーが出てきてしまう
 ```
 $ docker run --rm --gpus all nvidia/cuda nvidia-smi
 docker: Error response from daemon: linux runtime spec devices: could not select device driver "" with capabilities: [[gpu]].
