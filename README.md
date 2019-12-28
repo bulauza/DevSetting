@@ -12,7 +12,7 @@ WSL2だとこんなことをしなくていいかもしれない
 ←[参考](https://docs.microsoft.com/ja-jp/windows/wsl/wsl2-about#full-system-call-compatibility)  
 
 ## 問題点
-[WSLもWSL2がGPUに対応していないため](https://docs.microsoft.com/ja-jp/windows/wsl/wsl2-faq#can-i-access-the-gpu-in-wsl-2-are-there-plans-to-increase-hardware-support)，  
+[WSL/WSL2がGPUに対応していないため](https://docs.microsoft.com/ja-jp/windows/wsl/wsl2-faq#can-i-access-the-gpu-in-wsl-2-are-there-plans-to-increase-hardware-support)，  
 今回の方法ではdocker内でGPUが使えなさそう(2019/12月時点)  
 pythonとかのバージョン管理をホスト側に任せれば[リンク先](https://sekailab.com/wp/2019/03/10/execute-windows-binary-on-wsl/)
 の方法が使えそうだが，  
