@@ -1,46 +1,40 @@
-# 開発環境構築のための色々  
+# 開発環境構築のため手引き  
 まっさらな状態から整えることを想定  
 超個人的メモ
 
-## やったことの理解
-Windowsにはubuntuを動かすシステムがある=WSL(Windows Subsystem for Linux:WSL)  
-しかしWSL上ではDockerが動かせない  
-_because_ （無印の）WSLはlinuxカーネルが乗っていないから？  
-
-そこでDocker for windowsを入れて，そこにpathを通す作戦（多分）  
-WSL2だとこんなことをしなくていいかもしれない
-←[参考](https://docs.microsoft.com/ja-jp/windows/wsl/wsl2-about#full-system-call-compatibility)  
-
-## 問題点
-[WSL/WSL2がGPUに対応していないため](https://docs.microsoft.com/ja-jp/windows/wsl/wsl2-faq#can-i-access-the-gpu-in-wsl-2-are-there-plans-to-increase-hardware-support)，  
-今回の方法ではdocker内でGPUが使えなさそう(2019/12月時点)  
-pythonとかのバージョン管理をホスト側に任せれば[リンク先](https://sekailab.com/wp/2019/03/10/execute-windows-binary-on-wsl/)
-の方法が使えそうだが，  
-スクリプト内でosとかsubprocessでbashのコマンドを使えない問題がある  
-_because_ Windowsのpythonで動かすので，中で呼び出すコマンドもwindowsのものになってしまうから．
+## ざっくり説明
+WindowsにはWSLというLinuxを動かすシステムがある．  
+WSL自体は前からあったが，  
+今年6月17日あたりにWSL上でCUDAが使えるようになったのでGPUを使った学習が回せるようになった．  
+基本的な導入はMicrosoftやNvidiaの公式ページを参照すれば良いが，  
+所々すんなりいかなかったので共有する意図で書いていく．  
+日本語情報としては[こちらの記事](https://qiita.com/ksasaki/items/ee864abd74f95fea1efa)が詳しい．  
 
 ## Installation
-### Windowsでubuntuを動かす(WSL)
-1. Windowsマークで右クリック＞アプリと機能＞プログラムと機能＞Windowsの機能の有効化または無効化  
-Hyper-VとWindows Subsystem for Linuxにチェックをつけてサインアウト  
+### Windows10 Insider Programのインストール
+windowsの最新の機能を使うためのビルドをインストールする．  
+具体的な手順は[こちら](https://qiita.com/ksasaki/items/ee864abd74f95fea1efa#windows-10-insider-preview-build-20150-%E4%BB%A5%E9%99%8D-%E3%81%AE%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB)を参照．  
+将来的には`wsl --install`で出来るようになるらしい．  
 
-1. Microsoft Store で ubuntuを検索・インストール  
+### WSLのインストール
+1. **管理者**としてWindows PowerShellを開き，以下のコマンドを実行する．  
+    ```powershell
+    dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
 
-### dockerも動かしたい
-1. [docker hub](https://hub.docker.com/)からdesktopアプリをダウンロードする．  
-1. Setting
-    1. General で`Expose daemon on tcp://localhost:2375 without TLS`にチェック  
-    1. Sared  Drivers でマウントするドライブを設定．  
+    dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
 
+    Restart-Computer # ここで再起動を忘れずに
+    ```
+1. WSL2を規定に設定する
+    ```powershell
+    wsl --set-default-version 2
+    ```
+1. Microsoft Storeから好きなLinuxディストリビューションをインストール  
+使えるディストリビューションは[ここ](https://docs.microsoft.com/ja-jp/windows/wsl/install-win10#install-your-linux-distribution-of-choice)を参考
 
-## WSL内でdockerを使うための設定
-[Docker for Windowsで快適な環境を得るまでの そこそこ長い闘い](https://qiita.com/YukiMiyatake/items/73c7d6c4f2c9739ebe60)  
-[WSLでDocker for windowsを使うッ！！！](https://qiita.com/endo_hizumi/items/0cc50bdfbd827579733e)  
-
-GPUを使おうとするとエラーが出てきてしまう
-```
-$ docker run --rm --gpus all nvidia/cuda nvidia-smi
-docker: Error response from daemon: linux runtime spec devices: could not select device driver "" with capabilities: [[gpu]].
-```
-windowsだとまだdockerとgpu環境を共存させられなさそう
-[参照](https://github.com/NVIDIA/nvidia-docker/issues/665)
+1. (Optional)インストール出来ているか確認  
+    PowerShellで
+    ```powershell
+    wsl --list --verbose
+    ```
+    したときに名前の隣にversion2があれば大丈夫．
